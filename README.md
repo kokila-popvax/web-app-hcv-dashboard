@@ -82,12 +82,3 @@ enable genotype-grouped PSV columns.
   fallback always available.
 - **CSV export** of the current view; PNG via the Plotly camera button.
 - **Diagnostics panel** flags unmapped-bucket and uncategorized rows.
-
-## Data assumptions
-
-The IC50 sheet is expected to have (names are auto-detected, case-insensitive):
-`Experiment`, `Group`, `PSVX_No`, `PSV`, `Day`, `Construct_Description`,
-`Sample_Type`, `Dilution`, `Avg_Neut_percent_corrected`, and an IC50 column
-(`IC50` or `IC50_corrected`). Filtering matches V15/V16: HCV experiments only
-(PVXE141/142/167A/167B/174/181), dropping `GNG`/`G1` groups and antibody/plasma
-sample types. `NN`, blank, and `0` IC50 cells are treated as No Neutralization.
