@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HCV Cross-Neutralization Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="d-flex" id="wrapper">
+
+  <!-- ═══════════════════════════════════════════════════════════ SIDEBAR ══ -->
+  <div id="sidebar" class="border-end bg-white">
+    <div class="sidebar-header px-3 py-2 border-bottom d-flex align-items-center justify-content-between">
+      <span class="fw-bold text-success small">🧬 HCV Dashboard</span>
+      <button class="btn btn-sm btn-link p-0 text-muted" id="sidebarClose">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- 1 · Data source -->
+      <div class="sidebar-section">
+        <div class="sidebar-heading collapsed" data-bs-toggle="collapse" data-bs-target="#secData">
+          <span>1 · Data source</span><i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse show" id="secData">
+          <div class="px-2 pb-2 pt-1">
+
+            <div class="mb-2">
+              <div class="form-check form-check-sm">
+                <input class="form-check-input" type="radio" name="source" id="srcGsheet" value="gsheet" checked>
+                <label class="form-check-label" for="srcGsheet">Google Sheet (live)</label>
+              </div>
+              <div class="form-check form-check-sm">
+                <input class="form-check-input" type="radio" name="source" id="srcUrl" value="url">
+                <label class="form-check-label" for="srcUrl">Published CSV URL</label>
+              </div>
+              <div class="form-check form-check-sm">
+                <input class="form-check-input" type="radio" name="source" id="srcUpload" value="upload">
+                <label class="form-check-label" for="srcUpload">Upload CSV / XLSX</label>
+              </div>
+            </div>
+
+            <div id="gsheetInputs">
+              <div class="mb-1">
+                <label class="form-label small mb-0">IC50 sheet ID</label>
+                <input type="text" class="form-control form-control-sm" id="ic50SheetId" value="{{ default_ic50 }}">
+              </div>
+              <div class="mb-1">
+                <label class="form-label small mb-0">Worksheet (blank = first)</label>
+                <input type="text" class="form-control form-control-sm" id="worksheetName" placeholder="">
+              </div>
+              <div class="mb-1">
+                <label class="form-label small mb-0">Constructs sheet ID</label>
+                <input type="text" class="form-control form-control-sm" id="constSheetId" value="{{ default_const }}">
+              </div>
+            </div>
+
+            <div id="urlInputs" class="d-none">
+              <label class="form-label small mb-0">Published CSV URL</label>
+              <input type="text" class="form-control form-control-sm" id="csvUrl" placeholder="https://...">
+            </div>
+
+            <div id="uploadInputs" class="d-none">
+              <label class="form-label small mb-0">Upload IC50 file</label>
+              <input type="file" class="form-control form-control-sm" id="uploadFile" accept=".csv,.xlsx,.xls">
+            </div>
+
+            <button class="btn btn-success btn-sm w-100 mt-2" id="loadDataBtn">
+              <i class="bi bi-cloud-download me-1"></i>Load data
+            </button>
+            <button class="btn btn-outline-secondary btn-sm w-100 mt-1 d-none" id="clearCacheBtn">
+              <i class="bi bi-arrow-clockwise me-1"></i>Refresh (clear cache)
+            </button>
+            <div id="loadStatus" class="small mt-1"></div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- IC50 type -->
+      <div class="sidebar-section d-none" id="ic50TypeSection">
+        <div class="sidebar-heading collapsed" data-bs-toggle="collapse" data-bs-target="#secIc50">
+          <span>IC50 values</span><i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse" id="secIc50">
+          <div class="px-2 pb-2 pt-1">
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="ic50type" id="ic50Corrected" value="corrected" checked>
+              <label class="form-check-label small" for="ic50Corrected">Background corrected</label>
+            </div>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="ic50type" id="ic50Raw" value="raw">
+              <label class="form-check-label small" for="ic50Raw">Not background corrected</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2 · View -->
+      <div class="sidebar-section d-none" id="viewSection">
+        <div class="sidebar-heading" data-bs-toggle="collapse" data-bs-target="#secView">
+          <span>2 · View</span><i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse show" id="secView">
+          <div class="px-2 pb-2 pt-1">
+
+            <label class="sidebar-label">Metric</label>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="metric" id="metricPctNeut" value="pct_neut" checked>
+              <label class="form-check-label small" for="metricPctNeut">% neutralization</label>
+            </div>
+            <div class="form-check form-check-sm mb-2">
+              <input class="form-check-input" type="radio" name="metric" id="metricIC50" value="log10_ic50">
+              <label class="form-check-label small" for="metricIC50">log₁₀(IC50)</label>
+            </div>
+
+            <div id="dilutionGroup" class="mb-2">
+              <label class="sidebar-label">Dilution (1:x)</label>
+              <select class="form-select form-select-sm" id="dilutionSelect"></select>
+            </div>
+
+            <label class="sidebar-label">Cell encoding</label>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="encoding" id="encGradient" value="gradient" checked>
+              <label class="form-check-label small" for="encGradient">Gradient</label>
+            </div>
+            <div class="form-check form-check-sm mb-2">
+              <input class="form-check-input" type="radio" name="encoding" id="encThreshold" value="threshold">
+              <label class="form-check-label small" for="encThreshold">Threshold (hit map)</label>
+            </div>
+
+            <div id="thresholdGroup" class="d-none mb-2">
+              <label class="sidebar-label">Threshold presets</label>
+              <div id="threshPresets" class="d-flex gap-1 flex-wrap mb-1">
+                <button type="button" class="btn btn-outline-secondary btn-xs thr-preset active" data-val="50">≥50%</button>
+                <button type="button" class="btn btn-outline-secondary btn-xs thr-preset" data-val="75">≥75%</button>
+                <button type="button" class="btn btn-outline-secondary btn-xs thr-preset" data-val="custom">Custom</button>
+              </div>
+              <input type="number" class="form-control form-control-sm d-none" id="customThreshold" value="50" step="5">
+              <div class="form-check form-check-sm mt-1">
+                <input class="form-check-input" type="checkbox" id="thrGe" checked>
+                <label class="form-check-label small" for="thrGe">Use ≥ (uncheck for strictly &gt;)</label>
+              </div>
+            </div>
+
+            <label class="sidebar-label">Layout</label>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="layout" id="layoutSingle" value="single" checked>
+              <label class="form-check-label small" for="layoutSingle">Single heatmap</label>
+            </div>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="layout" id="layoutSmall" value="small_multiples">
+              <label class="form-check-label small" for="layoutSmall">Small multiples (by subgroup)</label>
+            </div>
+            <div class="form-check form-check-sm mb-2">
+              <input class="form-check-input" type="radio" name="layout" id="layoutTop4" value="top4">
+              <label class="form-check-label small" for="layoutTop4">Top 4 per subgroup</label>
+            </div>
+
+            <label class="sidebar-label">Dose window</label>
+            <select class="form-select form-select-sm mb-2" id="bucketSelect"></select>
+
+            <div id="subgroupGroup">
+              <label class="sidebar-label">Construct subgroup</label>
+              <select class="form-select form-select-sm mb-2" id="subgroupSelect"></select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="sidebar-section d-none" id="sortSection">
+        <div class="sidebar-heading collapsed" data-bs-toggle="collapse" data-bs-target="#secSort">
+          <span>Sort</span><i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse" id="secSort">
+          <div class="px-2 pb-2 pt-1">
+            <label class="sidebar-label">Sort rows by</label>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="sortby" id="sortBreadth" value="breadth" checked>
+              <label class="form-check-label small" for="sortBreadth">Breadth</label>
+            </div>
+            <div class="form-check form-check-sm mb-2">
+              <input class="form-check-input" type="radio" name="sortby" id="sortMean" value="mean_value">
+              <label class="form-check-label small" for="sortMean">Mean value</label>
+            </div>
+            <label class="sidebar-label">Order</label>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="sortorder" id="sortDesc" value="desc" checked>
+              <label class="form-check-label small" for="sortDesc">Descending (highest on top)</label>
+            </div>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="radio" name="sortorder" id="sortAsc" value="asc">
+              <label class="form-check-label small" for="sortAsc">Ascending (lowest on top)</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- More filters -->
+      <div class="sidebar-section d-none" id="filtersSection">
+        <div class="sidebar-heading collapsed" data-bs-toggle="collapse" data-bs-target="#secFilters">
+          <span>More filters</span><i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="collapse" id="secFilters">
+          <div class="px-2 pb-2 pt-1">
+            <label class="sidebar-label">Experiment</label>
+            <div id="expChecks" class="filter-checks mb-2"></div>
+            <label class="sidebar-label">Group</label>
+            <div id="grpChecks" class="filter-checks mb-2"></div>
+            <label class="sidebar-label">PSV</label>
+            <div id="psvChecks" class="filter-checks mb-2 psv-scroll"></div>
+            <div class="form-check form-check-sm mb-1">
+              <input class="form-check-input" type="checkbox" id="showValues" checked>
+              <label class="form-check-label small" for="showValues">Show values in cells</label>
+            </div>
+            <div class="form-check form-check-sm">
+              <input class="form-check-input" type="checkbox" id="useGeno" disabled>
+              <label class="form-check-label small text-muted" for="useGeno">Group PSVs by genotype</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apply -->
+      <div class="px-2 py-2 d-none" id="applySection">
+        <button class="btn btn-success btn-sm w-100" id="applyBtn">
+          <i class="bi bi-play-fill me-1"></i>Apply
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ MAIN ═══ -->
+  <div id="main-panel" class="flex-grow-1 d-flex flex-column overflow-hidden">
+
+    <div class="topbar border-bottom bg-white px-3 py-2 d-flex align-items-center gap-2 flex-shrink-0">
+      <button class="btn btn-sm btn-outline-secondary" id="sidebarToggle">
+        <i class="bi bi-list"></i>
+      </button>
+      <h5 class="mb-0 fw-bold">🧬 HCV Cross-Neutralization Dashboard</h5>
+    </div>
+
+    <div id="content" class="flex-grow-1 overflow-auto p-3">
+
+      <div id="welcomeState" class="text-center py-5">
+        <i class="bi bi-arrow-left-circle display-4 text-success opacity-50"></i>
+        <p class="mt-3 text-muted lead">Choose a data source in the sidebar to begin.</p>
+        <p class="text-muted small">If credentials aren't set up, try <strong>Published CSV URL</strong> or <strong>Upload CSV / XLSX</strong>.</p>
+      </div>
+
+      <div id="loadingSpinner" class="text-center py-5 d-none">
+        <div class="spinner-border text-success" role="status" style="width:2.5rem;height:2.5rem"></div>
+        <p class="mt-2 text-muted">Rendering…</p>
+      </div>
+
+      <div id="errorMsg" class="alert alert-danger d-none" role="alert"></div>
+
+      <div id="diagnosticsPanel" class="d-none mb-3">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light py-2 d-flex align-items-center gap-2"
+               role="button" data-bs-toggle="collapse" data-bs-target="#diagBody">
+            <i class="bi bi-clipboard-data-fill text-success"></i>
+            <span class="fw-semibold small">Data summary &amp; diagnostics</span>
+            <i class="bi bi-chevron-down ms-auto small"></i>
+          </div>
+          <div class="collapse" id="diagBody">
+            <div class="card-body py-2">
+              <div class="row g-2 mb-2">
+                <div class="col-6 col-md-3"><div class="metric-card"><div class="metric-val" id="dRawRows">—</div><div class="metric-lbl">Raw rows</div></div></div>
+                <div class="col-6 col-md-3"><div class="metric-card"><div class="metric-val" id="dAfterFilter">—</div><div class="metric-lbl">After HCV filter</div></div></div>
+                <div class="col-6 col-md-3"><div class="metric-card"><div class="metric-val" id="dUnknownBucket">—</div><div class="metric-lbl">Unmapped bucket</div></div></div>
+                <div class="col-6 col-md-3"><div class="metric-card"><div class="metric-val" id="dUncategorized">—</div><div class="metric-lbl">Uncategorized</div></div></div>
+              </div>
+              <div id="diagWarnings"></div>
+              <div id="diagColumns" class="small text-muted mt-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chartsArea"></div>
+
+      <div id="curveSection" class="d-none mt-3">
+        <h6 class="fw-semibold mb-2">🔬 Neutralization curve</h6>
+        <div class="row g-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label small mb-0">Construct</label>
+            <select class="form-select form-select-sm" id="curveConstruct"></select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small mb-0">PSV</label>
+            <select class="form-select form-select-sm" id="curvePsv"></select>
+          </div>
+        </div>
+        <div id="curvePlot" style="min-height:300px"></div>
+        <p class="text-muted small mt-1 mb-0">
+          <i class="bi bi-lightbulb-fill me-1 text-warning"></i>
+          Click any heatmap cell to pre-select the curve here.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
