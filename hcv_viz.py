@@ -92,17 +92,23 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
         y_labels = [_wrap(c, width=80) for c in constructs]
 
     # Build z-matrix
+    # NN cells get 0.0 (not NaN) so Plotly always has numeric data to anchor
+    # the axes — shapes rendered layer="above" cover the NN cells visually.
+    # not_tested cells stay NaN (transparent, shown as × markers).
+    status_arr = status_pivot.values
     if mode == "threshold":
-        z = np.where(status_pivot.values == "hit", 1.0, np.nan)
+        z = np.where(status_arr == "hit", 1.0, np.nan)
         colorscale = [[0, HIT_GREEN], [1, HIT_GREEN]]
         zmin, zmax, showscale = 0, 1, False
         cbar_title = ""
     elif metric == "log10_ic50":
-        z = np.where(status_pivot.values == "hit", value_pivot.values, np.nan)
+        z = np.where(status_arr == "hit", value_pivot.values,
+                     np.where(status_arr == "nn", 0.0, np.nan))
         colorscale, zmin, zmax, showscale = IC50_COLORSCALE, 1.0, 5.0, True
         cbar_title = "log₁₀(IC50)"
     else:
-        z = np.where(status_pivot.values == "hit", value_pivot.values, np.nan)
+        z = np.where(status_arr == "hit", value_pivot.values,
+                     np.where(status_arr == "nn", 0.0, np.nan))
         colorscale, zmin, zmax, showscale = NEUT_COLORSCALE, 0.0, 100.0, True
         cbar_title = "% neutralization"
 
