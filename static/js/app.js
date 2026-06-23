@@ -334,7 +334,8 @@ function mountPlotly(divId, fig, filters) {
   const layout = Object.assign({}, fig.layout, { autosize: true });
   delete layout.width;
 
-  Plotly.react(div, fig.data, layout, { responsive: true, displaylogo: false });
+  Plotly.react(div, fig.data, layout, { responsive: true, displaylogo: false })
+    .then(() => Plotly.relayout(div, { 'xaxis.autorange': true, 'yaxis.autorange': true }));
 
   if (filters.view_mode === 'single') {
     div.on('plotly_click', d => {
