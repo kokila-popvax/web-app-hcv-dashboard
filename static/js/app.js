@@ -188,6 +188,9 @@ async function renderView() {
       const r = data.results[0];
       updateCurveDropdowns(r.constructs, r.psvs);
       await loadCurve();
+      // Curve section appearing shifts the layout; re-autoscale the heatmap after it settles.
+      const heatmapDiv = document.getElementById('chart_main');
+      if (heatmapDiv) setTimeout(() => Plotly.relayout(heatmapDiv, { 'xaxis.autorange': true, 'yaxis.autorange': true }), 50);
     }
 
     document.getElementById('welcomeState').classList.add('d-none');
@@ -334,12 +337,8 @@ function mountPlotly(divId, fig, filters) {
   const layout = Object.assign({}, fig.layout, { autosize: true });
   delete layout.width;
 
-  const isSingle = filters.view_mode === 'single';
   Plotly.react(div, fig.data, layout, { responsive: true, displaylogo: false })
-    .then(() => {
-      const doScale = () => Plotly.relayout(div, { 'xaxis.autorange': true, 'yaxis.autorange': true });
-      isSingle ? setTimeout(doScale, 150) : doScale();
-    });
+    .then(() => Plotly.relayout(div, { 'xaxis.autorange': true, 'yaxis.autorange': true }));
 
   if (filters.view_mode === 'single') {
     div.on('plotly_click', d => {
