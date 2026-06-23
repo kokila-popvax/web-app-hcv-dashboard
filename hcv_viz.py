@@ -199,15 +199,11 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     # Estimate left margin from the longest (possibly wrapped) y-label
     effective_label_len = label_max_chars if label_max_chars else max(
         (len(lbl.replace("<br>", " ")) for lbl in y_labels), default=40)
-    left_margin = max(120, min(effective_label_len * 7, 340))
-    # Ensure minimum total width so y-axis labels are never squeezed off-screen
-    # Each cell ~60px, plus left margin + right margin (200) + breadth col
-    min_width = left_margin + 200 + max(n_cols * 80, 120)
+    left_margin = max(120, min(effective_label_len * 6, 420))
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),
         height=max(400, 80 + n_rows * row_height),
-        width=min_width,
         margin=dict(l=left_margin, r=200, t=220, b=20),
         plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Helvetica, Arial, sans-serif", size=10),
@@ -215,10 +211,10 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
         annotations=nn_annotations + breadth_annotations + sg_annotations,
     )
     fig.update_xaxes(side="top", tickangle=90, showgrid=False,
-                     tickfont=dict(size=11, color="black"), automargin=True,
+                     tickfont=dict(size=10, color="black"), automargin=False,
                      tickmode="array", tickvals=x_labels, ticktext=x_labels)
     fig.update_yaxes(autorange="reversed", showgrid=False,
-                     tickfont=dict(size=10, color="black"), automargin=True,
+                     tickfont=dict(size=10, color="black"), automargin=False,
                      tickmode="array", tickvals=y_labels, ticktext=y_labels)
     return fig
 
