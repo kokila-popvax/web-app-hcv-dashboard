@@ -184,7 +184,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
         n_positive = sum(1 for s in row_statuses if s in positive_statuses)
         if n_tested > 0:
             breadth_annotations.append(dict(
-                x=1.2, y=y_labels[yi],
+                x=1.17, y=y_labels[yi],
                 xref="paper", yref="y",
                 text=f"<b>{n_positive}</b>/{n_tested}",
                 showarrow=False,
