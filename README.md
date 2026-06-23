@@ -1,3 +1,12 @@
+---
+title: HCV Dashboard Web
+emoji: 🧬
+colorFrom: green
+colorTo: blue
+sdk: docker
+pinned: false
+---
+
 # HCV Cross-Neutralization Dashboard
 
 An interactive, filterable Streamlit rebuild of the V1–V16 heatmaps. One
