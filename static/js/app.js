@@ -202,7 +202,8 @@ async function renderView() {
 function gatherFilters() {
   const metric = document.querySelector('input[name="metric"]:checked').value;
   const dilSel = document.getElementById('dilutionSelect');
-  const dilution = (metric === 'pct_neut' && dilSel.value) ? parseFloat(dilSel.value) : null;
+  const dilRaw = dilSel.value;
+  const dilution = (metric === 'pct_neut') ? (dilRaw ? parseFloat(dilRaw) : 30.0) : null;
 
   const mode = document.querySelector('input[name="encoding"]:checked').value;
   const activePreset = document.querySelector('.thr-preset.active');
