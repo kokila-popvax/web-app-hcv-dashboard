@@ -227,6 +227,15 @@ def _top4_filter(tidy_df, view_df, subgroups, n=TOP4_N):
 
 @app.route("/api/render", methods=["POST"])
 def api_render():
+    try:
+        return _api_render_inner()
+    except Exception as exc:
+        import traceback
+        app.logger.error("api_render error: %s\n%s", exc, traceback.format_exc())
+        return jsonify({"ok": False, "error": str(exc)}), 500
+
+
+def _api_render_inner():
     sid = _ensure_sid()
     b = request.get_json(force=True)
 
