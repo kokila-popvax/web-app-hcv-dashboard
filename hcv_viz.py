@@ -184,7 +184,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
         n_positive = sum(1 for s in row_statuses if s in positive_statuses)
         if n_tested > 0:
             breadth_annotations.append(dict(
-                x=1.6, y=y_labels[yi],
+                x=1.03, y=y_labels[yi],
                 xref="paper", yref="y",
                 text=f"<b>{n_positive}</b>/{n_tested}",
                 showarrow=False,
@@ -199,12 +199,12 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     # Estimate left margin from the longest (possibly wrapped) y-label
     effective_label_len = label_max_chars if label_max_chars else max(
         (len(lbl.replace("<br>", " ")) for lbl in y_labels), default=40)
-    left_margin = max(120, min(effective_label_len * 5, 380))
+    left_margin = max(120, min(effective_label_len * 6, 420))
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),
         height=max(400, 80 + n_rows * row_height),
-        margin=dict(l=left_margin, r=20, t=220, b=20),
+        margin=dict(l=left_margin, r=55, t=220, b=20),
         plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Helvetica, Arial, sans-serif", size=10),
         shapes=nn_shapes,
