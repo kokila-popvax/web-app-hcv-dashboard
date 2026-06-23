@@ -121,7 +121,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     fig.add_trace(go.Heatmap(
         z=z, x=x_labels, y=y_labels, customdata=customdata,
         colorscale=colorscale, zmin=zmin, zmax=zmax, showscale=showscale,
-        xgap=1.5, ygap=1.5, hovertemplate=hover,
+        xgap=4, ygap=3, hovertemplate=hover,
         colorbar=dict(title=cbar_title, thickness=14, len=0.6)
         if showscale else None,
     ))
@@ -199,7 +199,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     # Estimate left margin from the longest (possibly wrapped) y-label
     effective_label_len = label_max_chars if label_max_chars else max(
         (len(lbl.replace("<br>", " ")) for lbl in y_labels), default=40)
-    left_margin = max(120, min(effective_label_len * 6, 420))
+    left_margin = max(120, min(effective_label_len * 5, 380))
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),
