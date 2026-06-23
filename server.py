@@ -257,6 +257,14 @@ def api_render():
     psv_geno = H.PSV_GENOTYPE if (use_geno and H.PSV_GENOTYPE) else None
     thr_pct  = threshold if metric == "pct_neut" else 50.0
 
+    # If dilution wasn't sent (e.g. first render before dropdown is populated),
+    # pick the best default: prefer 90, then 30, then first available.
+    if metric == "pct_neut" and dilution is None:
+        dils = list(info["all_dilutions"] or [30.0])
+        dilution = next((d for d in dils if d == 90.0),
+                        next((d for d in dils if d == 30.0),
+                             dils[0] if dils else 30.0))
+
     f = tidy[tidy["Experiment"].isin(experiments) & tidy["PSV"].isin(psvs_sel)]
     if groups:
         f = f[f["Group"].isin(groups)]
