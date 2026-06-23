@@ -200,11 +200,13 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     effective_label_len = label_max_chars if label_max_chars else max(
         (len(lbl.replace("<br>", " ")) for lbl in y_labels), default=40)
     left_margin = max(120, min(effective_label_len * 6, 420))
+    max_psv_len = max((len(p) for p in x_labels), default=10)
+    top_margin = max(60, min(max_psv_len * 8, 300))
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),
         height=max(400, 80 + n_rows * (row_height + 16)),
-        margin=dict(l=left_margin, r=55, t=280, b=20),
+        margin=dict(l=left_margin, r=55, t=top_margin, b=20),
         plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Helvetica, Arial, sans-serif", size=10),
         shapes=nn_shapes,
