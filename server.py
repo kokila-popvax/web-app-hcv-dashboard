@@ -37,6 +37,9 @@ log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "hcv-dashboard-dev-key-change-in-prod")
+# Allow session cookie in cross-origin iframes (needed for HF Spaces)
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True
 
 DEFAULT_IC50_SHEET = "1pGonKQsnbD4E_-ywm8-XjX_cG6eW0yF5-5hRgHDVWRc"
 DEFAULT_CONSTRUCT_SHEET = "1iv9fbnKjvWt_LCKuNPJy58ldJJGfey0SoJSv69cJF3E"
