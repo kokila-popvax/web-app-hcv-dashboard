@@ -205,16 +205,16 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     min_width = left_margin + 200 + max(n_cols * 60, 120)
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
-                   y=1.0, yanchor="top", pad=dict(t=8, b=0)),
+                   y=0.99, yanchor="top", pad=dict(t=4, b=0)),
         height=max(400, 80 + n_rows * row_height),
         width=min_width,
-        margin=dict(l=left_margin, r=200, t=200, b=20),
+        margin=dict(l=left_margin, r=200, t=60, b=160),
         plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Helvetica, Arial, sans-serif", size=10),
         shapes=nn_shapes,
         annotations=nn_annotations + breadth_annotations + sg_annotations,
     )
-    fig.update_xaxes(side="top", tickangle=-45, showgrid=False,
+    fig.update_xaxes(side="bottom", tickangle=-45, showgrid=False,
                      tickfont=dict(size=11, color="black"), automargin=True,
                      tickmode="array", tickvals=x_labels, ticktext=x_labels)
     fig.update_yaxes(autorange="reversed", showgrid=False,
