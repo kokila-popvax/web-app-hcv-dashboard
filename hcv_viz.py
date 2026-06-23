@@ -203,7 +203,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),
-        height=max(400, 80 + n_rows * (row_height + 8)),
+        height=max(400, 80 + n_rows * (row_height + 16)),
         margin=dict(l=left_margin, r=55, t=220, b=20),
         plot_bgcolor="white", paper_bgcolor="white",
         font=dict(family="Helvetica, Arial, sans-serif", size=10),
