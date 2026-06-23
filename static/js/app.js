@@ -239,18 +239,18 @@ function getChecked(containerId) {
 
 // ── Update sidebar from server info ──────────────────────────────────────────
 function updateSidebarFromInfo(info, filters) {
+  // Dilution
   const dilSel = document.getElementById('dilutionSelect');
-  const dils = info.all_dilutions || [30];
-  if (dilSel.options.length !== dils.length) {
-    dilSel.innerHTML = dils.map(d =>
-      `<option value="${d}">1:${Math.round(d)}</option>`
-    ).join('');
-  }
-  if (filters.dilution) {
-    const opt = [...dilSel.options].find(o => parseFloat(o.value) === filters.dilution);
-    if (opt) dilSel.value = opt.value;
-  }
+  const dils = (info.all_dilutions && info.all_dilutions.length) ? info.all_dilutions : [30];
+  dilSel.innerHTML = dils.map(d =>
+    `<option value="${d}">1:${Math.round(d)}</option>`
+  ).join('');
+  // Select the value the server actually used, or fall back to first option
+  const dilTarget = filters.dilution ?? dils[0];
+  const dilOpt = [...dilSel.options].find(o => parseFloat(o.value) === dilTarget);
+  if (dilOpt) dilSel.value = dilOpt.value;
 
+  // Dose window
   const bucketSel = document.getElementById('bucketSelect');
   const buckets = [...(info.buckets_present || []), 'All (pooled)'];
   bucketSel.innerHTML = buckets.map(b =>
@@ -258,12 +258,14 @@ function updateSidebarFromInfo(info, filters) {
   ).join('');
   if (filters.bucket) bucketSel.value = filters.bucket;
 
+  // Construct subgroup
   const subSel = document.getElementById('subgroupSelect');
   subSel.innerHTML = ['All constructs', ...(info.subgroups_present || [])].map(s =>
     `<option value="${esc(s)}">${esc(s)}</option>`
   ).join('');
   if (filters.subgroup) subSel.value = filters.subgroup;
 
+  // Experiment / Group / PSV checkboxes — only build once per data load
   if (!state.infoInitialized) {
     state.infoInitialized = true;
     buildCheckboxGroup('expChecks', info.experiments);
