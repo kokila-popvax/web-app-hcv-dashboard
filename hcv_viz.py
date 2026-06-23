@@ -214,7 +214,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
         shapes=nn_shapes,
         annotations=nn_annotations + breadth_annotations + sg_annotations,
     )
-    fig.update_xaxes(side="top", tickangle=45, showgrid=False,
+    fig.update_xaxes(side="top", tickangle=-45, showgrid=False,
                      tickfont=dict(size=11, color="black"), automargin=True,
                      tickmode="array", tickvals=x_labels, ticktext=x_labels)
     fig.update_yaxes(autorange="reversed", showgrid=False,
