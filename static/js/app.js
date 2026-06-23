@@ -51,11 +51,7 @@ async function loadData() {
       resp = await fetch('/api/load/gsheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sheet_id: document.getElementById('ic50SheetId').value.trim(),
-          worksheet: document.getElementById('worksheetName').value.trim() || null,
-          const_id: document.getElementById('constSheetId').value.trim(),
-        }),
+        body: JSON.stringify({}),
       });
     } else if (src === 'url') {
       const url = document.getElementById('csvUrl').value.trim();
