@@ -331,11 +331,10 @@ function mountPlotly(divId, fig, filters) {
   const div = document.getElementById(divId);
   if (!div) return;
 
-  // Keep the server-computed width so columns are properly spaced.
-  // The chart-card has overflow-x:auto so it scrolls if wider than the panel.
-  const layout = Object.assign({}, fig.layout, { autosize: false });
+  const layout = Object.assign({}, fig.layout, { autosize: true });
+  delete layout.width;
 
-  Plotly.react(div, fig.data, layout, { responsive: false, displaylogo: false });
+  Plotly.react(div, fig.data, layout, { responsive: true, displaylogo: false });
 
   if (filters.view_mode === 'single') {
     div.on('plotly_click', d => {
