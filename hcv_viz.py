@@ -202,7 +202,7 @@ def build_heatmap_figure(value_pivot: pd.DataFrame,
     left_margin = max(120, min(effective_label_len * 7, 340))
     # Ensure minimum total width so y-axis labels are never squeezed off-screen
     # Each cell ~60px, plus left margin + right margin (200) + breadth col
-    min_width = left_margin + 200 + max(n_cols * 60, 120)
+    min_width = left_margin + 200 + max(n_cols * 80, 120)
     fig.update_layout(
         title=dict(text=title, font=dict(size=14, color="#222"),
                    y=0.99, yanchor="top", pad=dict(t=4, b=0)),

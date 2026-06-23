@@ -166,7 +166,7 @@ html, body {
 
 .chart-card-header:hover { background: #e9ecef; }
 
-.chart-card-body { padding: 0.75rem; }
+.chart-card-body { padding: 0.75rem; overflow-x: auto; }
 
 .legend-caption {
   font-size: 0.75rem;
