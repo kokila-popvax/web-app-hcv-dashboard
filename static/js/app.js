@@ -334,8 +334,12 @@ function mountPlotly(divId, fig, filters) {
   const layout = Object.assign({}, fig.layout, { autosize: true });
   delete layout.width;
 
+  const isSingle = filters.view_mode === 'single';
   Plotly.react(div, fig.data, layout, { responsive: true, displaylogo: false })
-    .then(() => Plotly.relayout(div, { 'xaxis.autorange': true, 'yaxis.autorange': true }));
+    .then(() => {
+      const doScale = () => Plotly.relayout(div, { 'xaxis.autorange': true, 'yaxis.autorange': true });
+      isSingle ? setTimeout(doScale, 150) : doScale();
+    });
 
   if (filters.view_mode === 'single') {
     div.on('plotly_click', d => {
