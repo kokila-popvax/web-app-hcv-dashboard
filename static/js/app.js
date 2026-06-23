@@ -366,8 +366,12 @@ function updateDiagnostics(info) {
   if (info.n_uncategorized)
     warn.innerHTML += `<div class="alert alert-warning small py-1 px-2 mb-1">${esc(info.n_uncategorized + " rows fell into 'Uncategorized'. Extend SUBGROUP_RULES in hcv_data.py.")}</div>`;
 
+  const colMap = info.columns || {};
+  const colList = typeof colMap === 'object' && !Array.isArray(colMap)
+    ? Object.entries(colMap).filter(([,v]) => v).map(([k,v]) => `${k}=${v}`)
+    : colMap;
   document.getElementById('diagColumns').textContent =
-    'Detected columns: ' + (info.columns || []).join(', ');
+    'Detected columns: ' + (Array.isArray(colList) ? colList : []).join(', ');
 }
 
 // ── Curve ─────────────────────────────────────────────────────────────────────
