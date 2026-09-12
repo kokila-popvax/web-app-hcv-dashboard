@@ -674,6 +674,16 @@ def prepare_dataframe(df_ic50: pd.DataFrame,
     if C_GROUP:
         df = df[~df[C_GROUP].astype(str).str.strip().isin(DROP_GROUPS)]
     if C_EXP:
+        all_exps = df[C_EXP].astype(str).str.strip().unique().tolist()
+        kept_exps = [e for e in all_exps if e in HCV_EXPERIMENTS]
+        dropped_exps = [e for e in all_exps if e not in HCV_EXPERIMENTS]
+        import logging as _logging
+        _log = _logging.getLogger(__name__)
+        _log.info("HCV FILTER — all experiments in data: %s", sorted(all_exps))
+        _log.info("HCV FILTER — kept: %s", sorted(kept_exps))
+        if dropped_exps:
+            _log.info("HCV FILTER — DROPPED (not in HCV_EXPERIMENTS): %s", sorted(dropped_exps))
+        info["dropped_experiments"] = sorted(dropped_exps)
         df = df[df[C_EXP].astype(str).str.strip().isin(HCV_EXPERIMENTS)]
     info["n_after_filter"] = len(df)
 

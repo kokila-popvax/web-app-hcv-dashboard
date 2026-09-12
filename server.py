@@ -380,6 +380,7 @@ def _api_render_inner():
             "n_after_filter": info["n_after_filter"],
             "n_unknown_bucket": info["n_unknown_bucket"],
             "n_uncategorized": info["n_uncategorized"],
+            "dropped_experiments": info.get("dropped_experiments", []),
             "experiments": list(info["experiments"]),
             "groups": list(info["groups"]),
             "psvs": list(info["psvs"]),

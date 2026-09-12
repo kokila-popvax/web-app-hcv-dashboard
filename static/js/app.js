@@ -369,6 +369,8 @@ function updateDiagnostics(info) {
     warn.innerHTML += `<div class="alert alert-warning small py-1 px-2 mb-1">${esc(info.n_unknown_bucket + ' rows have no Prime/Boost1/Boost2 mapping (excluded). Add their keys to BUCKET_MAP in hcv_data.py.')}</div>`;
   if (info.n_uncategorized)
     warn.innerHTML += `<div class="alert alert-warning small py-1 px-2 mb-1">${esc(info.n_uncategorized + " rows fell into 'Uncategorized'. Extend SUBGROUP_RULES in hcv_data.py.")}</div>`;
+  if (info.dropped_experiments && info.dropped_experiments.length)
+    warn.innerHTML += `<div class="alert alert-danger small py-1 px-2 mb-1">Experiments dropped by HCV filter (not in HCV_EXPERIMENTS set): ${esc(info.dropped_experiments.join(', '))}. Add them to HCV_EXPERIMENTS in hcv_data.py if they are HCV experiments.</div>`;
 
   const colMap = info.columns || {};
   const colList = typeof colMap === 'object' && !Array.isArray(colMap)
