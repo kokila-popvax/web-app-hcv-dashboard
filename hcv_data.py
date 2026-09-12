@@ -142,6 +142,8 @@ _add("PVXE184", "279", 64, "Boost2")
 _add("PVXE184", "280", 64, "Boost2")
 _add("PVXE184", "281", 71, "Boost2")
 _add("PVXE184", "282", 71, "Boost2")
+_add("PVXE184", "304", 71, "Boost2")
+_add("PVXE184", "304", 85, "Boost2")
 _add("PVXE184", "307", 71, "Boost2")
 _add("PVXE184", "309", 71, "Boost2")
 
