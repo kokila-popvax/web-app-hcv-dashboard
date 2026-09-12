@@ -224,6 +224,7 @@ function gatherFilters() {
 
   const experiments = getChecked('expChecks');
   const groups      = getChecked('grpChecks');
+  const psvx_nums   = getChecked('psvxChecks');
   const psvs        = getChecked('psvChecks');
 
   return {
@@ -231,6 +232,7 @@ function gatherFilters() {
     sort_by, sort_descending, corrected_ic50, show_values, use_geno,
     experiments: experiments.length ? experiments : null,
     groups:      groups.length ? groups : null,
+    psvx_nums:   psvx_nums.length ? psvx_nums : null,
     psvs:        psvs.length  ? psvs   : null,
   };
 }
@@ -274,6 +276,7 @@ function updateSidebarFromInfo(info, filters) {
     state.infoInitialized = true;
     buildCheckboxGroup('expChecks', info.experiments);
     buildCheckboxGroup('grpChecks', info.groups);
+    buildCheckboxGroup('psvxChecks', info.psvx_nums || []);
     buildCheckboxGroup('psvChecks', info.psvs);
   }
 }

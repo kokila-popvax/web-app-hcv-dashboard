@@ -270,6 +270,7 @@ def _api_render_inner():
     experiments   = b.get("experiments") or list(info["experiments"])
     groups        = b.get("groups") or list(info["groups"])
     psvs_sel      = b.get("psvs") or list(info["psvs"])
+    psvx_sel      = b.get("psvx_nums") or list(info.get("psvx_nums", []))
     show_values   = b.get("show_values", True)
     use_geno      = b.get("use_geno", False)
 
@@ -285,6 +286,8 @@ def _api_render_inner():
                              dils[0] if dils else 30.0))
 
     f = tidy[tidy["Experiment"].isin(experiments) & tidy["PSV"].isin(psvs_sel)]
+    if psvx_sel and len(psvx_sel) < len(info.get("psvx_nums", [])):
+        f = f[f["PSVX_num"].isin(psvx_sel)]
     if groups:
         f = f[f["Group"].isin(groups)]
     if subgroup != "All constructs":
@@ -384,6 +387,7 @@ def _api_render_inner():
             "experiments": list(info["experiments"]),
             "groups": list(info["groups"]),
             "psvs": list(info["psvs"]),
+            "psvx_nums": list(info.get("psvx_nums", [])),
             "subgroups_present": list(info["subgroups_present"]),
             "all_dilutions": list(info["all_dilutions"] or [30.0]),
             "buckets_present": buckets_present,

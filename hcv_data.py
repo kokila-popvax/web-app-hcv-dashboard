@@ -765,6 +765,10 @@ def prepare_dataframe(df_ic50: pd.DataFrame,
     info["experiments"] = sorted(out["Experiment"].unique().tolist())
     info["groups"] = sorted(g for g in out["Group"].unique().tolist() if g)
     info["psvs"] = sorted(out["PSV"].unique().tolist())
+    info["psvx_nums"] = sorted(
+        (n for n in out["PSVX_num"].unique().tolist() if n),
+        key=lambda x: int(x) if x.isdigit() else x
+    )
     info["subgroups_present"] = [s for s in SUBGROUP_ORDER
                                  if s in set(out["Subgroup"].unique())]
 
