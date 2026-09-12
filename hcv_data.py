@@ -298,6 +298,10 @@ _EXACT_MAP_RAW = {
     "UKNP3.1.2 + UKNP1.18.1 + UKNP4.2.2 + 1b58 + 1a72 + HVR HPF Reactivity=3 ILP":               SG4,
     "UKNP3.1.2 + UKNP1.18.1 + UKNP4.2.2 + 1b58 + 1a72 + HVR HPF Reactivity=3 ILP\n+ UKNP1.16.3 + UKNP1.10.1 + UKNP1.9.1 + 1a123 + 1a154 + HVR HPF Reactivity=3 ILP": SG4,
     "UKNP3.1.2 + UKNP1.18.1 + UKNP4.2.2 + 1b58 + 1a72 + HVR HPF Reactivity=3 ILP\n+ UKNP1.16.3 + UKNP1.10.1 + UKNP1.9.1 + 1a123 + 1a154 + HVR HPF Reactivity=3 ILP\n+ 1a138 + 1b34 + UKNP5.2.1 + UKNP1.11.6 + 1b25 + HVR HPF Reactivity=3 ILP": SG4,
+    "Hardest 5 PSVs - UKNP3.1.2+UKNP1.18.1+1b58+UKNP1.10.1+1a72": SG4,
+    "1 each from 5 genotypes: UKNP3.1.2+UKNP1.18.1+UKNP4.2.2+1a154+UKNP.5.2.1": SG4,
+    "Hardest 5 PSVs - UKNP3.1.2+UKNP1.18.1+1b58+UKNP1.10.1+1a72 + CPG1018": SG4,
+    "1 each from 5 genotypes: UKNP3.1.2+UKNP1.18.1+UKNP4.2.2+1a154+UKNP.5.2.1 + CPG1018": SG4,
 
     # 5. HVR Immunogens
     "HVR HPF Reactivity=1 ILP":                          SG5,
@@ -321,6 +325,8 @@ _EXACT_MAP_RAW = {
     "HVR_wILP3_HPF+H77C_sE2_FYQ442NYT_HPF":              SG5,
     "H77mbE1E2_native_codon optimized + HVRs_wILP3max_21aa_HPF_G4Ssep": SG5,
     "H77mbE1E2_native_codon optimized + HVR_wILP3_HPF (a and b)":       SG5,
+    "HVR ILP_reactivity=1 on Ferritin containing only the first peptide": SG5,
+    "HVR ILP_reactivity=1 on HPF containing only the first peptide + 1a154 E1E2_TMD_IVT construct": SG5,
 
     # 6. E1/E2 TMD Variants
     "1a154 (H77_w7) E1_TMD||E2 _TMD IVT construct":      SG6,
@@ -343,6 +349,8 @@ _EXACT_MAP_RAW = {
     "H77mbE1E2_native_codon optimized":                  SG6,
     "H77_sE1_HATMD-sE2_HATMD_codon optimized":           SG6,
     "H77mbE1E2_native_FYQ442NYT_codon optimized":        SG6,
+    "JB_1a154 (H77_w7) E1_TMD IVT": SG6,
+    "JB_1a154 (H77_w7) E2_TMD IVT": SG6,
     
     # E1_TMD||E2_TMD variants with different spacing
     "1a154 E1_TMD||E2_TMD IVT construct":                SG6,
@@ -404,6 +412,8 @@ _EXACT_MAP_RAW = {
     "GaussiaSP-HVRs_top16_mostreactive_21aa_sep1G4S-2G4S-HPF+Adju-phos": SG7,
     "GaussiaSP-HVRs_top16_mostreactive_21aa_sep1G4S-HATMD-C,I,I-FA":     SG7,
     "GaussiaSP-HVRs_top16_mostreactive_21aa_sep1G4S-HATMD+Adju-Phos":    SG7,
+    "GaussiaSP-HVR_JordanFeld_21mer_soluble": SG7,
+    "GaussiaSP-HVRs_top16_mostreactive_21aa_sep1G4S-2G4S-HPF": SG7,
 }
 
 # Normalise keys: lower + collapse whitespace + remove space-before-underscore
