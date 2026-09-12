@@ -208,6 +208,13 @@ def _prepare(sid: str, corrected_ic50: bool):
         construct_lookup=construct_lookup or None,
         corrected_ic50=corrected_ic50,
     )
+    # Log unmapped and uncategorized rows for diagnosis
+    unmapped = tidy[tidy["Bucket_Type"] == "Unknown"][["Experiment","PSVX_num","Day"]].drop_duplicates()
+    if not unmapped.empty:
+        app.logger.info("UNMAPPED BUCKET KEYS:\n%s", unmapped.to_string(index=False))
+    uncategorized = tidy[tidy["Subgroup"] == "Uncategorized"]["Construct_Description"].drop_duplicates()
+    if not uncategorized.empty:
+        app.logger.info("UNCATEGORIZED CONSTRUCTS:\n%s", uncategorized.to_string(index=False))
     return tidy, info, None
 
 
